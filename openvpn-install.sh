@@ -73,8 +73,7 @@ if [[ -e /etc/openvpn/server.conf ]]; then
 			read -p "Number of keys: " -e -i 1 numb
 			
 			
-				for i in {1..$numb}
-  do 
+				for ((i=1;i<=$numb;i++)){
 			new=$CLIENT$i
 			
 			cd /etc/openvpn/easy-rsa/
@@ -86,7 +85,7 @@ if [[ -e /etc/openvpn/server.conf ]]; then
 
 			echo
 			echo "Client $new added, configuration is available at:" ~/"$new.ovpn"
- done
+ }
  
     		
 			
