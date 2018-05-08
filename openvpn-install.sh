@@ -70,12 +70,26 @@ if [[ -e /etc/openvpn/server.conf ]]; then
 			echo "Tell me a name for the client certificate."
 			echo "Please, use one word only, no special characters."
 			read -p "Client name: " -e -i client CLIENT
+			read -p "Number of keys: " -e -i 1 numb
+			
+			
+				for i in {1..$numb}
+  do 
+			new=$CLIENT$i
+			
 			cd /etc/openvpn/easy-rsa/
-			./easyrsa build-client-full $CLIENT nopass
+			./easyrsa build-client-full $new nopass
+           
+			newclient "$new"
 			# Generates the custom client.ovpn
-			newclient "$CLIENT"
+	
+
 			echo
-			echo "Client $CLIENT added, configuration is available at:" ~/"$CLIENT.ovpn"
+			echo "Client $new added, configuration is available at:" ~/"$new.ovpn"
+ done
+ 
+    		
+			
 			exit
 			;;
 			2)
@@ -171,7 +185,7 @@ else
 	# Autodetect IP address and pre-fill for the user
 	IP=$(ip addr | grep 'inet' | grep -v inet6 | grep -vE '127\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | head -1)
 	read -p "IP address: " -e -i $IP IP
-	# If $IP is a private IP address, the server must be behind NAT
+	# If $IP is a private IP address, the server must be behind NAT
 	if echo "$IP" | grep -qE '^(10\.|172\.1[6789]\.|172\.2[0-9]\.|172\.3[01]\.|192\.168)'; then
 		echo
 		echo "This server is behind NAT. What is the public IPv4 address or hostname?"
